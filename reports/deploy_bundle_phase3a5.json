@@ -1,0 +1,18 @@
+{
+  "bundle": "dist\\ethusdc-pivot-bot-phase3a5.tar.gz",
+  "excludes": [
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "logs/* except .gitkeep",
+    "data/*.sqlite*",
+    ".env",
+    "dist",
+    "runtime reports except reports/.gitkeep"
+  ],
+  "files": 62,
+  "generated_at_utc": "2026-06-20T09:53:27.399988+00:00",
+  "phase": "phase3a5",
+  "sha256": "13ce9690aa02045bd068136659053df0ecd09ff4b089104e0b0200d5013685e2"
+}

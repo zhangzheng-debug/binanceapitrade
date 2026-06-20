@@ -1,0 +1,75 @@
+{
+  "approved_for_final_live_strategy_start": false,
+  "checks": {
+    "api_credentials_present": {
+      "detail": {
+        "has_api_key": true,
+        "has_api_secret": true
+      },
+      "ok": true
+    },
+    "config_interval": {
+      "detail": "15m",
+      "ok": true
+    },
+    "config_live_trading_false_until_start": {
+      "detail": false,
+      "ok": true
+    },
+    "config_mainnet": {
+      "detail": "mainnet",
+      "ok": true
+    },
+    "config_symbol": {
+      "detail": "ETHUSDC",
+      "ok": true
+    },
+    "exchange_info_rest": {
+      "detail": "EXCHANGE_INFO_REST",
+      "ok": true
+    },
+    "final_human_approval": {
+      "detail": "missing I_APPROVE_FINAL_LIVE_STRATEGY_START=YES",
+      "ok": false
+    },
+    "final_readiness_gate": {
+      "detail": "READY_FOR_FINAL_LIVE_STRATEGY_DECISION",
+      "ok": true
+    },
+    "live_strategy_capability": {
+      "detail": "LIVE_STRATEGY_CAPABILITY_GO",
+      "ok": true
+    },
+    "no_open_orders_after_canary": {
+      "detail": 0,
+      "ok": true
+    },
+    "no_unexpected_fill": {
+      "detail": false,
+      "ok": true
+    },
+    "one_way_position_mode_for_strategy": {
+      "detail": false,
+      "ok": true
+    },
+    "order_control_canary": {
+      "detail": "LIVE_ORDER_CONTROL_CANARY_GO",
+      "ok": true
+    },
+    "order_mode": {
+      "detail": "account_equity_pct",
+      "ok": true
+    },
+    "position_size_pct": {
+      "detail": "200",
+      "ok": true
+    },
+    "signed_readonly_preflight": {
+      "detail": "SIGNED_READONLY_PREFLIGHT_GO",
+      "ok": true
+    }
+  },
+  "final_verdict": "FINAL_LIVE_START_GATE_NO_GO",
+  "generated_at_utc": "2026-06-20T17:20:09.436093+00:00",
+  "next_required_human_instruction": "decide whether to start a tiny live strategy canary under a supervised service"
+}

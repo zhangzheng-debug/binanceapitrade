@@ -1,0 +1,18 @@
+{
+  "bundle": "dist\\ethusdc-pivot-bot-phase3b-dry-run.tar.gz",
+  "excludes": [
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "logs/* except .gitkeep",
+    "data/*.sqlite*",
+    ".env",
+    "dist",
+    "runtime reports except reports/.gitkeep"
+  ],
+  "files": 73,
+  "generated_at_utc": "2026-06-20T11:17:40.632990+00:00",
+  "phase": "phase3b_ws_only_systemd_dry_run",
+  "sha256": "fa04ee098dca10f50f723b4936ca78d85676e0778102e6c5a8713910e807d8de"
+}

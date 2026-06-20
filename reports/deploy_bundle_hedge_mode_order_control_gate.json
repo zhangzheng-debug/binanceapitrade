@@ -1,0 +1,18 @@
+{
+  "bundle": "dist\\ethusdc-pivot-bot-hedge-mode-order-control-gate.tar.gz",
+  "excludes": [
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "logs/* except .gitkeep",
+    "data/*.sqlite*",
+    ".env",
+    "dist",
+    "runtime reports except reports/.gitkeep"
+  ],
+  "files": 107,
+  "generated_at_utc": "2026-06-20T16:04:53.363910+00:00",
+  "phase": "hedge_mode_order_control_gate",
+  "sha256": "d6fff6ae6de0a984aa947eea62f813b64c29324ea9d54a8c03cf5d85029eaaa7"
+}

@@ -1,0 +1,18 @@
+{
+  "bundle": "dist\\ethusdc-pivot-bot-live-sizing-position-side-gate.tar.gz",
+  "excludes": [
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "logs/* except .gitkeep",
+    "data/*.sqlite*",
+    ".env",
+    "dist",
+    "runtime reports except reports/.gitkeep"
+  ],
+  "files": 110,
+  "generated_at_utc": "2026-06-20T16:17:18.472809+00:00",
+  "phase": "live_sizing_position_side_gate",
+  "sha256": "0c0ae8f7e20304f80a36481ca823975d2eb8233501e9d52bdf0583df1db44d36"
+}

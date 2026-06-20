@@ -1,0 +1,16 @@
+[Unit]
+Description=ETHUSDC Pivot Bot supervised live strategy canary
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ethusdc-pivot-bot
+Environment=I_APPROVE_FINAL_LIVE_STRATEGY_START=YES
+ExecStart=%h/ethusdc-pivot-bot/scripts/run_final_live_strategy.sh
+Restart=on-failure
+RestartSec=10
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,219 @@
+{
+  "account_can_trade": null,
+  "approval_env_present": true,
+  "buy": {
+    "best_ask": "1727.22",
+    "best_bid": "1727.21",
+    "cancel_attempt_count": 1,
+    "cancel_executed_qty": "0.000",
+    "cancel_status": "CANCELED",
+    "executed_qty": "0.000",
+    "modify_attempt_count": 1,
+    "modify_executed_qty": "0.000",
+    "modify_price": "1722.89",
+    "modify_status": "NEW",
+    "ok": true,
+    "order_id_tail": "...251983",
+    "place_attempt_count": 1,
+    "place_price": "1723.75",
+    "place_status": "NEW",
+    "position_side": "BOTH",
+    "quantity": "0.013",
+    "query_after_modify_status": "NEW",
+    "query_executed_qty": "0.000",
+    "query_status": "NEW",
+    "side": "BUY",
+    "target_notional": "22.40875",
+    "unexpected_fill": false
+  },
+  "cancel_order_attempt_count": 2,
+  "cleanup": {},
+  "emergency_cleanup_triggered": false,
+  "exchange_info_source": "EXCHANGE_INFO_REST",
+  "expected_whitelist_ip": "167.172.69.16",
+  "filters": {
+    "min_notional": "20",
+    "min_qty": "0.001",
+    "step_size": "0.001",
+    "tick_size": "0.01"
+  },
+  "final_open_orders_count": 0,
+  "final_position_rows": [],
+  "final_verdict": "LIVE_ORDER_CONTROL_CANARY_GO",
+  "full_strategy_started": false,
+  "generated_at_utc": "2026-06-20T17:15:55.207057+00:00",
+  "hedge_mode_approval_env_present": false,
+  "hedge_mode_market_cleanup_count": 0,
+  "initial_open_orders_count": 0,
+  "initial_position_rows": [],
+  "ip_match": true,
+  "key_secret_printed": false,
+  "limit_gtx_order_attempt_count": 2,
+  "live_trading_started": false,
+  "market_entry_attempt_count": 0,
+  "modify_order_attempt_count": 2,
+  "order_mode": "account_equity_pct",
+  "position_mode_dual_side": false,
+  "position_size_pct": "200",
+  "real_order_attempt_count": 2,
+  "reduceOnly_market_cleanup_count": 0,
+  "sell": {
+    "best_ask": "1727.22",
+    "best_bid": "1727.21",
+    "cancel_attempt_count": 1,
+    "cancel_executed_qty": "0.000",
+    "cancel_status": "CANCELED",
+    "executed_qty": "0.000",
+    "modify_attempt_count": 1,
+    "modify_executed_qty": "0.000",
+    "modify_price": "1731.54",
+    "modify_status": "NEW",
+    "ok": true,
+    "order_id_tail": "...252070",
+    "place_attempt_count": 1,
+    "place_price": "1730.68",
+    "place_status": "NEW",
+    "position_side": "BOTH",
+    "quantity": "0.013",
+    "query_after_modify_status": "NEW",
+    "query_executed_qty": "0.000",
+    "query_status": "NEW",
+    "side": "SELL",
+    "target_notional": "22.49884",
+    "unexpected_fill": false
+  },
+  "server_public_ip": "167.172.69.16",
+  "signed_calls": [
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v3/account",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/positionSide/dual",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/openOrders",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v3/positionRisk",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "POST",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "PUT",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "DELETE",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "POST",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "PUT",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "DELETE",
+      "ok": true,
+      "path": "/fapi/v1/order",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/openOrders",
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v3/positionRisk",
+      "status_code": 200
+    }
+  ],
+  "stop_market_entry_attempt_count": 0,
+  "symbol": "ETHUSDC",
+  "unexpected_fill": false
+}

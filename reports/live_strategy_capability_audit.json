@@ -1,0 +1,16 @@
+{
+  "account_equity_blocked_in_dry_run": true,
+  "blockers": [],
+  "final_verdict": "LIVE_STRATEGY_CAPABILITY_GO",
+  "generated_at_utc": "2026-06-20T17:20:08.466103+00:00",
+  "has_account_equity_sizing": true,
+  "has_live_entry_canary_once": true,
+  "has_live_runner": true,
+  "has_live_stop_management": true,
+  "has_maker_chaser": true,
+  "has_public_dry_runner": true,
+  "live_requested_logged": true,
+  "live_runner_path": "src/bot/live_strategy_runner.py",
+  "live_strategy_runner_implemented": true,
+  "main_path": "src/bot/main.py"
+}

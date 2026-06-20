@@ -1,0 +1,146 @@
+{
+  "decision_codes": [
+    "F2_MAINNET_REST_NO_GO",
+    "PUBLIC_WS_DRY_RUN_ONLY"
+  ],
+  "generated_at_utc": "2026-06-20T13:45:53.522039+00:00",
+  "results": [
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 42,
+      "environment": "mainnet",
+      "error": "HTTP Error 451:",
+      "name": "mainnet_ping",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://fapi.binance.com/fapi/v1/ping"
+    },
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 11,
+      "environment": "mainnet",
+      "error": "HTTP Error 451:",
+      "name": "mainnet_time",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://fapi.binance.com/fapi/v1/time"
+    },
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 10,
+      "environment": "mainnet",
+      "error": "HTTP Error 451:",
+      "name": "mainnet_exchangeInfo",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://fapi.binance.com/fapi/v1/exchangeInfo"
+    },
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 13,
+      "environment": "mainnet",
+      "error": "HTTP Error 451:",
+      "name": "mainnet_bookTicker",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://fapi.binance.com/fapi/v1/ticker/bookTicker?symbol=ETHUSDC"
+    },
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 502,
+      "environment": "testnet",
+      "error": "HTTP Error 451:",
+      "name": "testnet_ping",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://demo-fapi.binance.com/fapi/v1/ping"
+    },
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 488,
+      "environment": "testnet",
+      "error": "HTTP Error 451:",
+      "name": "testnet_time",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://demo-fapi.binance.com/fapi/v1/time"
+    },
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 499,
+      "environment": "testnet",
+      "error": "HTTP Error 451:",
+      "name": "testnet_exchangeInfo",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://demo-fapi.binance.com/fapi/v1/exchangeInfo"
+    },
+    {
+      "classification": "rest_451_blocked_no_bypass",
+      "elapsed_ms": 496,
+      "environment": "testnet",
+      "error": "HTTP Error 451:",
+      "name": "testnet_bookTicker",
+      "ok": false,
+      "response_snippet_redacted": "{ \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believ",
+      "status_code": 451,
+      "transport": "rest",
+      "url": "https://demo-fapi.binance.com/fapi/v1/ticker/bookTicker?symbol=ETHUSDC"
+    },
+    {
+      "classification": "ok",
+      "details": {
+        "contains_closed_flag": true,
+        "interval": "15m",
+        "stream": "ethusdc@kline_15m",
+        "symbol": "ETHUSDC"
+      },
+      "elapsed_ms": 1029,
+      "environment": "mainnet",
+      "error": "",
+      "name": "mainnet_kline_ws",
+      "ok": true,
+      "status_code": null,
+      "transport": "websocket",
+      "url": "wss://fstream.binance.com/market/stream?streams=ethusdc@kline_15m"
+    },
+    {
+      "classification": "ok",
+      "details": {
+        "contains_bid_ask": true,
+        "stream": "ethusdc@bookTicker",
+        "symbol": "ETHUSDC"
+      },
+      "elapsed_ms": 591,
+      "environment": "mainnet",
+      "error": "",
+      "name": "mainnet_bookticker_ws",
+      "ok": true,
+      "status_code": null,
+      "transport": "websocket",
+      "url": "wss://fstream.binance.com/public/stream?streams=ethusdc@bookTicker"
+    }
+  ],
+  "safety": {
+    "api_keys_read": false,
+    "orders": false,
+    "proxy_vpn_tunnel_bypass": false,
+    "public_only": true,
+    "signed_rest": false
+  },
+  "symbol": "ETHUSDC"
+}

@@ -1,0 +1,1 @@
+26ca0e8f9be1df6bc939d1040772f15cf1a5b7cdacfa1e21634d570c8c726908  /root/ethusdc-pivot-bot-original-pivot-fast-smoke.tar.gz

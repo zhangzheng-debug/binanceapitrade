@@ -1,0 +1,24 @@
+{
+  "source": "manual_example_not_for_live",
+  "symbol": "ETHUSDC",
+  "safe_for_live": false,
+  "dry_run_only": true,
+  "created_for": "public_market_ws_only_dry_run",
+  "note": "Dry-run only. Must be replaced by fresh exchangeInfo before testnet/live.",
+  "filters": {
+    "PRICE_FILTER": {
+      "tickSize": "0.01"
+    },
+    "LOT_SIZE": {
+      "stepSize": "0.001",
+      "minQty": "0.001"
+    },
+    "MARKET_LOT_SIZE": {
+      "stepSize": "0.001",
+      "minQty": "0.001"
+    },
+    "MIN_NOTIONAL": {
+      "notional": "5"
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "checks": {
+    "account": {
+      "account_query_shape": "dict",
+      "assets_count": 11,
+      "assets_present": [
+        "BFUSD",
+        "BNB",
+        "BTC",
+        "ETH",
+        "FDUSD",
+        "LDUSDT",
+        "RWUSD",
+        "U",
+        "USD1",
+        "USDC",
+        "USDT"
+      ],
+      "can_trade": null,
+      "multi_assets_margin": null,
+      "ok": true,
+      "positions_count": 0
+    },
+    "exchange_info": {
+      "filters_source": "EXCHANGE_INFO_REST",
+      "min_notional": "20",
+      "min_qty": "0.001",
+      "ok": true,
+      "safe_for_live": true,
+      "step_size": "0.001",
+      "tick_size": "0.01"
+    },
+    "open_orders": {
+      "ethusdc_open_orders_count": 0,
+      "ok": true
+    },
+    "position": {
+      "ethusdc_position_amt": "0",
+      "is_flat": true,
+      "ok": true
+    },
+    "server_public_ip": {
+      "ok": true
+    },
+    "server_time": {
+      "ok": true,
+      "timestamp_drift_ms": 6
+    }
+  },
+  "expected_whitelist_ip": "167.172.69.16",
+  "final_verdict": "SIGNED_READONLY_PREFLIGHT_GO",
+  "generated_at_utc": "2026-06-20T15:38:36.149328+00:00",
+  "interval": "15m",
+  "ip_match": true,
+  "key_secret_printed": false,
+  "live_trading_started": false,
+  "order_endpoint_called": false,
+  "order_mode": "account_equity_pct",
+  "position_size_pct": "200",
+  "requests": [
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/time",
+      "signed": false,
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/exchangeInfo",
+      "signed": false,
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v3/account",
+      "signed": true,
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v3/positionRisk",
+      "signed": true,
+      "status_code": 200
+    },
+    {
+      "classification": "ok",
+      "error": "",
+      "method": "GET",
+      "ok": true,
+      "path": "/fapi/v1/openOrders",
+      "signed": true,
+      "status_code": 200
+    }
+  ],
+  "server_public_ip": "167.172.69.16",
+  "strategy_variant": "original_pivot_reversal",
+  "symbol": "ETHUSDC"
+}

@@ -1,0 +1,18 @@
+{
+  "bundle": "dist\\ethusdc-pivot-bot-final-pre-live-gate.tar.gz",
+  "excludes": [
+    ".venv",
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    "logs/* except .gitkeep",
+    "data/*.sqlite*",
+    ".env",
+    "dist",
+    "runtime reports except reports/.gitkeep"
+  ],
+  "files": 135,
+  "generated_at_utc": "2026-06-20T17:25:28.376177+00:00",
+  "phase": "final_pre_live_gate",
+  "sha256": "4b13ce188b657a1e833a5be61962c3f0751d8baa33ef380180215b43a604bf5c"
+}

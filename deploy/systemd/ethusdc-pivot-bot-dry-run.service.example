@@ -1,0 +1,19 @@
+[Unit]
+Description=ETHUSDC Pivot Bot WS-only dry-run example
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=dev
+WorkingDirectory=/home/dev/ethusdc-pivot-bot
+EnvironmentFile=/home/dev/ethusdc-pivot-bot/.env
+ExecStart=/home/dev/ethusdc-pivot-bot/.venv/bin/python -m bot.main
+Restart=always
+RestartSec=10
+
+# Draft dry-run service only. Keep DRY_RUN=true, LIVE_TRADING=false,
+# PUBLIC_MARKET_DRY_RUN=true, PUBLIC_MARKET_WS_ONLY=true, and empty API keys.
+
+[Install]
+WantedBy=multi-user.target

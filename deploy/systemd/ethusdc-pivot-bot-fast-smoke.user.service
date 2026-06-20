@@ -1,0 +1,34 @@
+[Unit]
+Description=ETHUSDC Pivot Bot fast WS-only smoke
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/dev/ethusdc-pivot-bot
+EnvironmentFile=-/home/dev/ethusdc-pivot-bot/.env
+Environment=DRY_RUN=true
+Environment=LIVE_TRADING=false
+Environment=PUBLIC_MARKET_DRY_RUN=true
+Environment=PUBLIC_MARKET_WS_ONLY=true
+Environment=ALLOW_CACHED_EXCHANGE_FILTERS_IN_DRY_RUN=true
+Environment=BINANCE_SYMBOL=ETHUSDC
+Environment=BINANCE_INTERVAL=15m
+Environment=EXIT_AFTER_BOUNDED_RUNTIME=true
+Environment=PHASE_FAST_SMOKE_SECONDS=1800
+Environment=BOOKTICKER_LOG_MODE=summary
+Environment=BOOKTICKER_LOG_EVERY_N=2000
+Environment=BOOKTICKER_SUMMARY_INTERVAL_SECONDS=60
+Environment=KLINE_LOG_UNCLOSED_EVERY_N=200
+Environment=LOG_RAW_MARKET_MESSAGES=false
+Environment=MAX_EVENTS_LOG_MB=100
+Environment=WARN_EVENTS_LOG_MB=50
+Environment=MAX_BOT_LOG_MB=100
+Environment=WARN_BOT_LOG_MB=50
+Environment=BINANCE_ENV=mainnet
+Environment=BINANCE_API_KEY=
+Environment=BINANCE_API_SECRET=
+ExecStart=/home/dev/ethusdc-pivot-bot/.venv/bin/python -m bot.main
+Restart=no
+RuntimeMaxSec=1900
+KillSignal=SIGTERM
+TimeoutStopSec=30

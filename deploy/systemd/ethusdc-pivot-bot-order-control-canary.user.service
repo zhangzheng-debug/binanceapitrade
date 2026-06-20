@@ -1,0 +1,22 @@
+[Unit]
+Description=ETHUSDC Pivot Bot live order-control canary
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/ethusdc-pivot-bot
+EnvironmentFile=%h/ethusdc-pivot-bot/.env.live.readonly
+Environment=DRY_RUN=false
+Environment=LIVE_TRADING=false
+Environment=PUBLIC_MARKET_DRY_RUN=false
+Environment=PUBLIC_MARKET_WS_ONLY=false
+Environment=ALLOW_CACHED_EXCHANGE_FILTERS_IN_DRY_RUN=false
+Environment=BINANCE_SYMBOL=ETHUSDC
+Environment=BINANCE_INTERVAL=15m
+Environment=STRATEGY_VARIANT=original_pivot_reversal
+Environment=I_APPROVE_LIVE_ORDER_CONTROL_CANARY=YES
+ExecStart=%h/ethusdc-pivot-bot/.venv/bin/python scripts/live_canary_order_control.py
+Restart=no
+RuntimeMaxSec=300
+KillSignal=SIGTERM
+TimeoutStopSec=30
