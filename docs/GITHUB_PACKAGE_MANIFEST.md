@@ -22,8 +22,8 @@ prepared. Signed read-only preflight showed open orders `0` and position amount
 - `tools/f2_migration_checker/`: Binance Futures public REST/WebSocket migration checker.
 - `config/`: non-secret cached dry-run filter fixtures.
 - `docs/`: architecture, runbooks, current sanitized server state, and Codex handoff instructions.
-- `reports/`: generated validation reports that do not contain secrets, when
-  included by the packaging step.
+- `reports/`: current generated validation reports that do not contain secrets,
+  when included by the packaging step.
 - `.env.example`: safe template with empty credentials.
 
 ## Excluded
@@ -64,6 +64,6 @@ Use these files first:
 - `docs/SERVER_CURRENT_STATE_SANITIZED.md`
 - `docs/risk_rules.md`
 
-Historical phase reports may mention earlier ETH-only, 150%, 200%, or live
-canary states. Treat them as historical evidence, not current operating
-instructions.
+Superseded phase reports are intentionally omitted from the GitHub package.
+Older local or server artifacts may mention ETH-only, 150%, 200%, or live
+canary states; do not treat those as current operating instructions.

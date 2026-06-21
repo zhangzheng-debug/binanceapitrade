@@ -121,8 +121,9 @@ BINANCE_SYMBOL=XRPUSDC BINANCE_INTERVAL=1h POSITION_SIZE_PCT=100 python scripts/
 - `docs/GITHUB_PACKAGE_MANIFEST.md`
 - `docs/risk_rules.md`
 
-Historical phase reports remain in `docs/` and `reports/` as evidence from
-earlier gates. Treat the files listed above as the current source of truth.
+Superseded phase reports were intentionally omitted from the GitHub package so
+humans and Codex do not confuse old ETH-only, 150%, 200%, or live-canary states
+with the current stopped multi-symbol state.
 
 ## Common Server Commands
 
