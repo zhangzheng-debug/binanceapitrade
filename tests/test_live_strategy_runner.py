@@ -28,7 +28,7 @@ def live_settings(**overrides):
         "BINANCE_API_KEY": "key",
         "BINANCE_API_SECRET": "secret",
         "ORDER_MODE": "account_equity_pct",
-        "POSITION_SIZE_PCT": "200",
+        "POSITION_SIZE_PCT": "100",
         "_env_file": None,
     }
     values.update(overrides)
@@ -57,7 +57,7 @@ def trigger_event() -> StrategyEvent:
     )
 
 
-def test_live_entry_canary_uses_200_pct_sizing_and_maker_chaser() -> None:
+def test_live_entry_canary_uses_100_pct_sizing_and_maker_chaser() -> None:
     exchange = DryRunExchange()
     exchange.set_book_tickers([BookTicker("ETHUSDC", Decimal("3000.00"), Decimal("1"), Decimal("3000.01"), Decimal("1"))])
     exchange.set_query_plan([(OrderStatus.FILLED, Decimal("0.066"))])
@@ -72,9 +72,9 @@ def test_live_entry_canary_uses_200_pct_sizing_and_maker_chaser() -> None:
     )
     order = next(iter(exchange.orders.values()))
 
-    assert result.target_notional == "200"
-    assert result.quantity == "0.066"
-    assert result.actual_notional == "198.000"
+    assert result.target_notional == "100"
+    assert result.quantity == "0.033"
+    assert result.actual_notional == "99.000"
     assert result.chase_success is True
     assert Decimal(result.avg_price or "0") == Decimal("3000")
     assert order.time_in_force.value == "GTX"

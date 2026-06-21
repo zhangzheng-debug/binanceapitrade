@@ -30,6 +30,7 @@ class TriggerMonitor:
         *,
         active_entry_chase: bool = False,
         has_open_position: bool = False,
+        open_position_side: StrategySignalSide | None = None,
     ) -> list[StrategyEvent]:
         long_trigger = self.strategy.state.pending_long_trigger
         short_trigger = self.strategy.state.pending_short_trigger
@@ -58,7 +59,18 @@ class TriggerMonitor:
                 )
             ]
 
-        if has_open_position:
+        if open_position_side == side:
+            return [
+                StrategyEvent(
+                    "same_side_trigger_ignored_position_open",
+                    trigger.signal_id,
+                    trigger.trigger_price,
+                    update.event_time,
+                    side,
+                )
+            ]
+
+        if has_open_position and open_position_side is None:
             return [
                 StrategyEvent(
                     "ignored_due_to_position",

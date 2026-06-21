@@ -1,27 +1,46 @@
 # Final Live Start Gate
 
-Generated UTC: `2026-06-20T17:20:09.436093+00:00`
+Snapshot UTC: `2026-06-21T11:11:26Z`
 
 Final verdict: `FINAL_LIVE_START_GATE_NO_GO`
-Approved for final live strategy start: `False`
 
-## Checks
+Reason: all strategy services were intentionally stopped and disabled before
+packaging. A future live start requires explicit current-thread approval and a
+fresh gate run.
 
-- final_human_approval: `False` (missing I_APPROVE_FINAL_LIVE_STRATEGY_START=YES)
-- signed_readonly_preflight: `True` (SIGNED_READONLY_PREFLIGHT_GO)
-- order_control_canary: `True` (LIVE_ORDER_CONTROL_CANARY_GO)
-- live_strategy_capability: `True` (LIVE_STRATEGY_CAPABILITY_GO)
-- final_readiness_gate: `True` (READY_FOR_FINAL_LIVE_STRATEGY_DECISION)
-- one_way_position_mode_for_strategy: `True` (False)
-- exchange_info_rest: `True` (EXCHANGE_INFO_REST)
-- no_open_orders_after_canary: `True` (0)
-- no_unexpected_fill: `True` (False)
-- order_mode: `True` (account_equity_pct)
-- position_size_pct: `True` (200)
-- config_symbol: `True` (ETHUSDC)
-- config_interval: `True` (15m)
-- config_mainnet: `True` (mainnet)
-- config_live_trading_false_until_start: `True` (False)
-- api_credentials_present: `True` ({'has_api_key': True, 'has_api_secret': True})
+## Current Strategy Profiles
 
-Next required human instruction: `decide whether to start a tiny live strategy canary under a supervised service`
+| Symbol | Interval | Position size | Service state |
+| --- | --- | --- | --- |
+| `ETHUSDC` | `15m` | `100%` account equity | stopped/disabled |
+| `BTCUSDC` | `1h` | `100%` account equity | stopped/disabled |
+| `XRPUSDC` | `1h` | `100%` account equity | stopped/disabled |
+
+## Last Stop Verification
+
+Signed read-only preflight was run after stopping services.
+
+```text
+ETHUSDC: SIGNED_READONLY_PREFLIGHT_GO, open_orders=0, position_amt=0
+BTCUSDC: SIGNED_READONLY_PREFLIGHT_GO, open_orders=0, position_amt=0
+XRPUSDC: SIGNED_READONLY_PREFLIGHT_GO, open_orders=0, position_amt=0
+```
+
+Safety:
+
+```text
+order_endpoint_called=False
+live_trading_started=False
+key_secret_printed=False
+```
+
+## Required Before Any Future Start
+
+```bash
+python -m pytest
+python scripts/scan_secrets.py
+python scripts/replay_forced_original_pivot_trigger.py
+```
+
+Then run signed read-only preflight for every symbol and start services only
+after explicit approval.

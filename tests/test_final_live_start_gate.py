@@ -12,7 +12,7 @@ def ready_summary(**overrides):
         "final_open_orders_count": 0,
         "unexpected_fill": False,
         "order_mode": "account_equity_pct",
-        "position_size_pct": "200",
+        "position_size_pct": "100",
         "next_required_human_instruction": "decide whether to start a tiny live strategy canary under a supervised service",
     }
     values.update(overrides)

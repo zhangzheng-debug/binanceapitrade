@@ -18,17 +18,17 @@ def filters() -> SymbolFilters:
     )
 
 
-def test_account_equity_pct_size_uses_200_pct_and_floor_quantizes() -> None:
+def test_account_equity_pct_size_uses_100_pct_and_floor_quantizes() -> None:
     size = account_equity_pct_size(
         account_equity=Decimal("123.45"),
-        position_size_pct=Decimal("200"),
+        position_size_pct=Decimal("100"),
         price=Decimal("3456.78"),
         filters=filters(),
     )
 
-    assert size.target_notional == Decimal("246.90")
-    assert size.quantity == Decimal("0.071")
-    assert size.actual_notional == Decimal("245.43138")
+    assert size.target_notional == Decimal("123.45")
+    assert size.quantity == Decimal("0.035")
+    assert size.actual_notional == Decimal("120.98730")
     assert size.actual_notional <= size.target_notional
 
 

@@ -53,8 +53,8 @@ if ! printf '%s\n' "$CONFIG_JSON" | grep -q '"order_mode": "account_equity_pct"'
   exit 1
 fi
 
-if ! printf '%s\n' "$CONFIG_JSON" | grep -q '"position_size_pct": "200"'; then
-  echo "Refusing to install: POSITION_SIZE_PCT must be 200."
+if ! printf '%s\n' "$CONFIG_JSON" | grep -q '"position_size_pct": "100"'; then
+  echo "Refusing to install: POSITION_SIZE_PCT must be 100."
   exit 1
 fi
 

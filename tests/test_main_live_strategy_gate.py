@@ -18,7 +18,7 @@ def test_live_strategy_rejects_without_final_human_approval(monkeypatch) -> None
         BINANCE_API_KEY="key",
         BINANCE_API_SECRET="secret",
         ORDER_MODE="account_equity_pct",
-        POSITION_SIZE_PCT="200",
+        POSITION_SIZE_PCT="100",
         _env_file=None,
     )
 

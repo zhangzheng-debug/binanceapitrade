@@ -40,6 +40,7 @@ class OrderStatus(str, Enum):
 class ChaseType(str, Enum):
     ENTRY = "ENTRY"
     STOP = "STOP"
+    CLOSE = "CLOSE"
 
 
 class StrategySignalSide(str, Enum):
@@ -95,8 +96,6 @@ class BookTickerSnapshot:
 
     def __post_init__(self) -> None:
         self.symbol = self.symbol.upper()
-        if self.symbol != "ETHUSDC":
-            raise ValueError("bookTicker snapshot must be for ETHUSDC")
         if self.best_bid_price <= 0 or self.best_ask_price <= 0:
             raise ValueError("bookTicker bid/ask prices must be positive")
         if self.best_bid_qty < 0 or self.best_ask_qty < 0:

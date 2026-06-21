@@ -18,7 +18,7 @@ from bot.config import ConfigError, Settings
 from bot.dry_run_exchange import DryRunExchange, ExchangeFilterFailure
 from bot.exchange_filters import FilterSource, SymbolFilters, maker_price
 from bot.execution_maker_chaser import MakerChaser, ManualClock
-from bot.market_data import LOCKED_STREAM_NAME, candle_from_kline_payload, kline_ws_url, process_kline_payload
+from bot.market_data import LOCKED_STREAM_NAME, candle_from_kline_payload, kline_stream_name, kline_ws_url, process_kline_payload
 from bot.models import BookTicker, BookTickerSnapshot, OrderRequest, OrderType, Side, TimeInForce
 from bot.safety import (
     LiveTradingRejected,
@@ -126,7 +126,7 @@ def test_ws_bookticker_parse() -> None:
 
 def test_ws_bookticker_rejects_bad_symbol() -> None:
     with pytest.raises(ValueError):
-        snapshot_from_book_ticker_payload(make_payload(symbol="BTCUSDC"))
+        Settings(BINANCE_SYMBOL="ETHUSDT", _env_file=None)
 
 
 def test_ws_bookticker_rejects_crossed_book() -> None:
@@ -276,13 +276,23 @@ def test_config_public_ws_only_live_rejected() -> None:
 def test_combined_stream_names() -> None:
     assert LOCKED_STREAM_NAME == "ethusdc@kline_15m"
     assert book_ticker_stream_name("ETHUSDC") == "ethusdc@bookTicker"
+    assert kline_stream_name("BTCUSDC", "1h") == "btcusdc@kline_1h"
+    assert book_ticker_stream_name("BTCUSDC") == "btcusdc@bookTicker"
+    assert kline_stream_name("XRPUSDC", "1h") == "xrpusdc@kline_1h"
+    assert book_ticker_stream_name("XRPUSDC") == "xrpusdc@bookTicker"
 
 
 def test_combined_routed_paths() -> None:
     settings = Settings(BINANCE_ENV="mainnet", _env_file=None)
+    btc_settings = Settings(BINANCE_ENV="mainnet", BINANCE_SYMBOL="BTCUSDC", BINANCE_INTERVAL="1h", _env_file=None)
+    xrp_settings = Settings(BINANCE_ENV="mainnet", BINANCE_SYMBOL="XRPUSDC", BINANCE_INTERVAL="1h", _env_file=None)
     assert "/market/stream?streams=ethusdc@kline_15m" in kline_ws_url(settings)
+    assert "/market/stream?streams=btcusdc@kline_1h" in kline_ws_url(btc_settings)
+    assert "/market/stream?streams=xrpusdc@kline_1h" in kline_ws_url(xrp_settings)
     assert LOCKED_BOOK_TICKER_ROUTED_PATH == "/public"
     assert "/public/stream?streams=ethusdc@bookTicker" in book_ticker_ws_url(settings)
+    assert "/public/stream?streams=btcusdc@bookTicker" in book_ticker_ws_url(btc_settings)
+    assert "/public/stream?streams=xrpusdc@bookTicker" in book_ticker_ws_url(xrp_settings)
 
 
 def test_kline_unclosed_ignored_still() -> None:

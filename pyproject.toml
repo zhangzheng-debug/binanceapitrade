@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ethusdc-pivot-bot"
 version = "0.1.0"
-description = "Dry-run first ETHUSDC.P pivot reversal trading bot skeleton."
+description = "Dry-run first multi-symbol Binance USD-M pivot reversal trading bot."
 requires-python = ">=3.11"
 dependencies = [
   "pydantic>=2.7",

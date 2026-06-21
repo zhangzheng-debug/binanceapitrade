@@ -1,6 +1,6 @@
 # Forced Original Pivot Trigger Replay Report
 
-Generated UTC: `2026-06-20T21:54:58.209738+00:00`
+Generated UTC: `2026-06-21T13:09:21.529485+00:00`
 
 This replay is fully synthetic. It does not read API keys, sign REST requests, place real orders, or require Binance network access.
 

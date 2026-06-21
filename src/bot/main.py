@@ -22,6 +22,7 @@ from bot.live_strategy_runner import (
     account_equity_from_account_payload,
     require_final_live_strategy_start_approval,
     run_live_entry_canary_once,
+    run_live_reduce_only_close_once,
     run_live_stop_once,
 )
 from bot.live_position_state import (
@@ -51,6 +52,7 @@ async def async_main() -> int:
     settings = load_settings()
     configure_logging(
         settings.log_level,
+        log_dir=settings.log_dir,
         max_bot_log_mb=settings.max_bot_log_mb,
         max_events_log_mb=settings.max_events_log_mb,
     )
@@ -161,6 +163,13 @@ async def run_live_strategy(settings, logger: logging.Logger, *, alerts: AlertMa
         def active_stop_chase() -> bool:
             return stop_task is not None and not stop_task.done()
 
+        def position_signal_side() -> StrategySignalSide | None:
+            if position.side == PositionSide.LONG:
+                return StrategySignalSide.LONG
+            if position.side == PositionSide.SHORT:
+                return StrategySignalSide.SHORT
+            return None
+
         async def run_live_stop(signal_id: str) -> None:
             nonlocal position
             result = await run_live_stop_once(
@@ -224,6 +233,53 @@ async def run_live_strategy(settings, logger: logging.Logger, *, alerts: AlertMa
                         max_entry_fills=settings.live_strategy_max_entry_fills,
                     )
 
+        async def run_live_reversal(event: StrategyEvent) -> None:
+            nonlocal position
+            if event.side is None or event.signal_id is None:
+                log_event(logger, "live_reversal_blocked_incomplete_signal")
+                return
+            original_position = position
+            close_signal_id = f"reverse_close_{event.signal_id}"
+            log_event(
+                logger,
+                "live_reversal_close_started",
+                signal_id=event.signal_id,
+                from_side=original_position.side.value,
+                to_side=event.side.value,
+                quantity=str(original_position.quantity),
+            )
+            close_result = await run_live_reduce_only_close_once(
+                settings=settings,
+                exchange=client,
+                filters=filters,
+                position=original_position,
+                signal_id=close_signal_id,
+                logger=logger,
+            )
+            log_event(
+                logger,
+                "live_reversal_close_finished",
+                signal_id=event.signal_id,
+                side=close_result.side,
+                success=close_result.chase_success,
+                reason=close_result.chase_reason,
+                order_id=close_result.order_id or "",
+                filled_qty=close_result.filled_qty,
+            )
+            position = await client.get_position(settings.binance_symbol)
+            if not position.is_flat:
+                write_managed_position_marker(settings.live_managed_position_marker_path, position, signal_id=event.signal_id)
+                log_event(
+                    logger,
+                    "live_reversal_blocked_close_incomplete",
+                    signal_id=event.signal_id,
+                    remaining_side=position.side.value,
+                    remaining_quantity=str(position.quantity),
+                )
+                return
+            clear_managed_position_marker(settings.live_managed_position_marker_path)
+            await run_live_entry(event)
+
         async def handle_strategy_events(events: list[StrategyEvent]) -> None:
             nonlocal entry_task
             for event in events:
@@ -240,6 +296,9 @@ async def run_live_strategy(settings, logger: logging.Logger, *, alerts: AlertMa
                 if event.signal_id is None:
                     log_event(logger, "live_trigger_blocked_missing_signal_id")
                     continue
+                if event.side is None:
+                    log_event(logger, "live_trigger_blocked_missing_side", signal_id=event.signal_id)
+                    continue
                 if live_entry_fill_limit_reached(settings.live_strategy_max_entry_fills, live_entry_fill_count):
                     log_event(
                         logger,
@@ -249,12 +308,21 @@ async def run_live_strategy(settings, logger: logging.Logger, *, alerts: AlertMa
                         max_entry_fills=settings.live_strategy_max_entry_fills,
                     )
                     continue
+                if active_entry_chase():
+                    log_event(logger, "live_trigger_blocked_active_chase", signal_id=event.signal_id)
+                    continue
+                if active_stop_chase():
+                    log_event(logger, "live_trigger_blocked_active_close", signal_id=event.signal_id)
+                    continue
                 try:
-                    risk.assert_can_start_entry(position, active_entry=active_entry_chase(), active_stop=active_stop_chase())
+                    risk.assert_signal_allowed(event.side, position)
                 except RiskError as exc:
                     log_event(logger, "live_trigger_blocked_risk", signal_id=event.signal_id, reason=str(exc))
                     continue
-                entry_task = asyncio.create_task(run_live_entry(event))
+                if position.is_flat:
+                    entry_task = asyncio.create_task(run_live_entry(event))
+                else:
+                    entry_task = asyncio.create_task(run_live_reversal(event))
 
         async def update_live_bookticker(snapshot) -> None:
             nonlocal stop_task
@@ -267,10 +335,10 @@ async def run_live_strategy(settings, logger: logging.Logger, *, alerts: AlertMa
                     source="bookTicker",
                 ),
                 active_entry_chase=active_entry_chase(),
-                has_open_position=not position.is_flat,
+                open_position_side=position_signal_side(),
             )
             await handle_strategy_events(events)
-            if position.is_flat or active_stop_chase():
+            if not settings.stop_loss_enabled or position.is_flat or active_stop_chase():
                 return
             observed_price = snapshot.best_bid_price if position.side == PositionSide.LONG else snapshot.best_ask_price
             if risk.stop_triggered(position, observed_price):

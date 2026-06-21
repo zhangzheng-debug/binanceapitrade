@@ -7,7 +7,7 @@ import logging
 
 import websockets
 
-from bot.config import Settings
+from bot.config import SUPPORTED_INTERVALS, SUPPORTED_SYMBOLS, Settings
 from bot.logging_config import log_event, log_event_debug
 from bot.models import Candle
 
@@ -24,9 +24,14 @@ class UserDataStreamClient:
 
 
 def kline_stream_name(symbol: str, interval: str) -> str:
-    if symbol.upper() != LOCKED_SYMBOL or interval != LOCKED_INTERVAL:
-        raise ValueError("Initial release only supports ETHUSDC 15m kline stream")
-    return LOCKED_STREAM_NAME
+    normalized_symbol = symbol.upper()
+    if normalized_symbol not in SUPPORTED_SYMBOLS:
+        allowed = ", ".join(sorted(SUPPORTED_SYMBOLS))
+        raise ValueError(f"Supported kline stream symbols: {allowed}")
+    if interval not in SUPPORTED_INTERVALS:
+        allowed = ", ".join(sorted(SUPPORTED_INTERVALS))
+        raise ValueError(f"Supported kline intervals: {allowed}")
+    return f"{normalized_symbol.lower()}@kline_{interval}"
 
 
 def kline_ws_url(settings: Settings) -> str:
@@ -73,13 +78,14 @@ def candle_from_kline_payload(payload: dict, logger: logging.Logger | None = Non
 
 async def stream_closed_klines(settings: Settings, logger: logging.Logger | None = None) -> AsyncIterator[Candle]:
     url = kline_ws_url(settings)
+    stream = kline_stream_name(settings.binance_symbol, settings.binance_interval)
     while True:
         if logger is not None:
-            log_event(logger, "websocket_connecting", url=url, stream=LOCKED_STREAM_NAME)
+            log_event(logger, "websocket_connecting", url=url, stream=stream)
         try:
             async with websockets.connect(url, ping_interval=180, ping_timeout=600) as ws:
                 if logger is not None:
-                    log_event(logger, "websocket_connected", url=url, stream=LOCKED_STREAM_NAME)
+                    log_event(logger, "websocket_connected", url=url, stream=stream)
                 async for message in ws:
                     candle = candle_from_kline_payload(json.loads(message), logger)
                     if candle is not None:
@@ -87,12 +93,12 @@ async def stream_closed_klines(settings: Settings, logger: logging.Logger | None
         except websockets.ConnectionClosed as exc:
             if logger is not None:
                 log_event(logger, "websocket_disconnected", reason=str(exc))
-                log_event(logger, "websocket_reconnecting", stream=LOCKED_STREAM_NAME)
+                log_event(logger, "websocket_reconnecting", stream=stream)
             continue
         except OSError as exc:
             if logger is not None:
                 log_event(logger, "websocket_disconnected", reason=str(exc))
-                log_event(logger, "websocket_reconnecting", stream=LOCKED_STREAM_NAME)
+                log_event(logger, "websocket_reconnecting", stream=stream)
             continue
 
 

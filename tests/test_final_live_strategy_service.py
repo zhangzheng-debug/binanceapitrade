@@ -2,6 +2,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 UNIT = ROOT / "deploy" / "systemd" / "ethusdc-pivot-bot-live-strategy.user.service"
+BTC_UNIT = ROOT / "deploy" / "systemd" / "btcusdc-pivot-bot-live-strategy.user.service"
+XRP_UNIT = ROOT / "deploy" / "systemd" / "xrpusdc-pivot-bot-live-strategy.user.service"
 INSTALL_SCRIPT = ROOT / "scripts" / "install_final_live_strategy_user_service.sh"
 START_SCRIPT = ROOT / "scripts" / "start_final_live_strategy_user_service.sh"
 STATUS_SCRIPT = ROOT / "scripts" / "status_final_live_strategy_user_service.sh"
@@ -54,10 +56,41 @@ def test_final_live_run_script_uses_restart_safe_runtime_gates() -> None:
     assert "export DRY_RUN=false" in text
     assert "export LIVE_TRADING=true" in text
     assert "export ORDER_MODE=account_equity_pct" in text
-    assert "export POSITION_SIZE_PCT=200" in text
+    assert "export BINANCE_SYMBOL=ETHUSDC" in text
+    assert "export BINANCE_INTERVAL=15m" in text
+    assert "export POSITION_SIZE_PCT=100" in text
+    assert "LOG_DIR" in text
     assert 'export LIVE_STRATEGY_MAX_ENTRY_FILLS="${LIVE_STRATEGY_MAX_ENTRY_FILLS:-0}"' in text
     assert 'export LIVE_STRATEGY_RESUME_EXISTING_POSITION="${LIVE_STRATEGY_RESUME_EXISTING_POSITION:-true}"' in text
     assert "exec .venv/bin/python -m bot.main" in text
+
+
+def test_btcusdc_live_unit_and_run_script_are_1h_100_pct() -> None:
+    unit = BTC_UNIT.read_text(encoding="utf-8")
+    script = (ROOT / "scripts" / "run_final_live_strategy_btcusdc_1h.sh").read_text(encoding="utf-8")
+
+    assert "ExecStart=%h/ethusdc-pivot-bot/scripts/run_final_live_strategy_btcusdc_1h.sh" in unit
+    assert "Restart=on-failure" in unit
+    assert "WantedBy=default.target" in unit
+    assert "export BINANCE_SYMBOL=BTCUSDC" in script
+    assert "export BINANCE_INTERVAL=1h" in script
+    assert "export POSITION_SIZE_PCT=100" in script
+    assert "LOG_DIR" in script
+    assert "exec .venv/bin/python -m bot.main" in script
+
+
+def test_xrpusdc_live_unit_and_run_script_are_1h_100_pct() -> None:
+    unit = XRP_UNIT.read_text(encoding="utf-8")
+    script = (ROOT / "scripts" / "run_final_live_strategy_xrpusdc_1h.sh").read_text(encoding="utf-8")
+
+    assert "ExecStart=%h/ethusdc-pivot-bot/scripts/run_final_live_strategy_xrpusdc_1h.sh" in unit
+    assert "Restart=on-failure" in unit
+    assert "WantedBy=default.target" in unit
+    assert "export BINANCE_SYMBOL=XRPUSDC" in script
+    assert "export BINANCE_INTERVAL=1h" in script
+    assert "export POSITION_SIZE_PCT=100" in script
+    assert "LOG_DIR" in script
+    assert "exec .venv/bin/python -m bot.main" in script
 
 
 def test_final_live_status_and_stop_are_scoped_to_user_service() -> None:

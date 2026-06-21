@@ -6,6 +6,7 @@ import hmac
 import json
 import sys
 import time
+import os
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
@@ -25,8 +26,8 @@ from bot.exchange_filters import SymbolFilters  # noqa: E402
 
 REPORTS = ROOT / "reports"
 DOCS = ROOT / "docs"
-JSON_REPORT = REPORTS / "live_readonly_preflight.json"
-MD_REPORT = DOCS / "live_readonly_preflight_report.md"
+JSON_REPORT = Path(os.environ.get("LIVE_READONLY_PREFLIGHT_JSON_REPORT", REPORTS / "live_readonly_preflight.json"))
+MD_REPORT = Path(os.environ.get("LIVE_READONLY_PREFLIGHT_MD_REPORT", DOCS / "live_readonly_preflight_report.md"))
 
 READONLY_SIGNED_ENDPOINTS = {
     ("GET", "/fapi/v3/account"),
@@ -273,6 +274,8 @@ async def run_preflight() -> dict[str, Any]:
         position_amt = position_amount_from_payload(position_payload, settings.binance_symbol)
         payload["checks"]["position"] = {
             "ok": True,
+            "symbol": settings.binance_symbol,
+            "position_amt": str(position_amt),
             "ethusdc_position_amt": str(position_amt),
             "is_flat": position_amt == 0,
         }
@@ -281,6 +284,8 @@ async def run_preflight() -> dict[str, Any]:
         open_orders_count = len(open_orders) if isinstance(open_orders, list) else -1
         payload["checks"]["open_orders"] = {
             "ok": isinstance(open_orders, list),
+            "symbol": settings.binance_symbol,
+            "open_orders_count": open_orders_count,
             "ethusdc_open_orders_count": open_orders_count,
         }
 
@@ -297,7 +302,7 @@ async def run_preflight() -> dict[str, Any]:
                 payload["checks"]["position"]["ok"],
                 payload["checks"]["position"]["is_flat"],
                 payload["checks"]["open_orders"]["ok"],
-                payload["checks"]["open_orders"]["ethusdc_open_orders_count"] == 0,
+                payload["checks"]["open_orders"]["open_orders_count"] == 0,
                 not payload["order_endpoint_called"],
                 not payload["live_trading_started"],
             ]
@@ -345,9 +350,9 @@ def write_markdown(payload: dict[str, Any]) -> None:
         f"- Min notional: `{checks.get('exchange_info', {}).get('min_notional')}`",
         f"- Signed account query OK: `{checks.get('account', {}).get('ok')}`",
         f"- Position query OK: `{checks.get('position', {}).get('ok')}`",
-        f"- ETHUSDC position amount: `{checks.get('position', {}).get('ethusdc_position_amt')}`",
+        f"- {payload.get('symbol')} position amount: `{checks.get('position', {}).get('position_amt')}`",
         f"- OpenOrders query OK: `{checks.get('open_orders', {}).get('ok')}`",
-        f"- ETHUSDC open orders count: `{checks.get('open_orders', {}).get('ethusdc_open_orders_count')}`",
+        f"- {payload.get('symbol')} open orders count: `{checks.get('open_orders', {}).get('open_orders_count')}`",
         "",
         "## Safety",
         "",

@@ -7,6 +7,9 @@ from typing import Literal
 from pydantic import Field, ValidationError, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+SUPPORTED_SYMBOLS = {"ETHUSDC", "BTCUSDC", "XRPUSDC"}
+SUPPORTED_INTERVALS = {"15m", "1h"}
+
 
 class ConfigError(ValueError):
     """Raised when runtime configuration is unsafe."""
@@ -93,9 +96,9 @@ class Settings(BaseSettings):
     order_mode: Literal["fixed_qty", "fixed_notional", "account_equity_pct"] = Field(default="fixed_notional", alias="ORDER_MODE")
     fixed_qty: Decimal | None = Field(default=None, alias="FIXED_QTY")
     fixed_notional: Decimal | None = Field(default=Decimal("100"), alias="FIXED_NOTIONAL")
-    position_size_pct: Decimal = Field(default=Decimal("200"), alias="POSITION_SIZE_PCT", gt=Decimal("0"))
+    position_size_pct: Decimal = Field(default=Decimal("100"), alias="POSITION_SIZE_PCT", gt=Decimal("0"))
 
-    stop_loss_enabled: bool = Field(default=True, alias="STOP_LOSS_ENABLED")
+    stop_loss_enabled: bool = Field(default=False, alias="STOP_LOSS_ENABLED")
     stop_loss_pct: Decimal = Field(default=Decimal("0.005"), alias="STOP_LOSS_PCT", gt=Decimal("0"))
     live_strategy_max_entry_fills: int = Field(default=1, alias="LIVE_STRATEGY_MAX_ENTRY_FILLS", ge=0)
     live_strategy_resume_existing_position: bool = Field(
@@ -111,6 +114,7 @@ class Settings(BaseSettings):
     take_profit_pct: Decimal | None = Field(default=None, alias="TAKE_PROFIT_PCT")
 
     state_db_path: Path = Field(default=Path("./data/state.sqlite3"), alias="STATE_DB_PATH")
+    log_dir: Path = Field(default=Path("./logs"), alias="LOG_DIR")
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
     auto_cancel_unknown_orders: bool = Field(default=False, alias="AUTO_CANCEL_UNKNOWN_ORDERS")
@@ -127,18 +131,20 @@ class Settings(BaseSettings):
 
     @field_validator("binance_symbol")
     @classmethod
-    def symbol_must_be_ethusdc(cls, value: str) -> str:
+    def symbol_must_be_supported(cls, value: str) -> str:
         normalized = value.upper()
-        if normalized != "ETHUSDC":
-            raise ConfigError("Initial release only supports BINANCE_SYMBOL=ETHUSDC")
+        if normalized not in SUPPORTED_SYMBOLS:
+            allowed = ", ".join(sorted(SUPPORTED_SYMBOLS))
+            raise ConfigError(f"Supported BINANCE_SYMBOL values: {allowed}")
         return normalized
 
     @field_validator("binance_interval")
     @classmethod
-    def interval_must_be_15m(cls, value: str) -> str:
+    def interval_must_be_supported(cls, value: str) -> str:
         normalized = value.strip()
-        if normalized != "15m":
-            raise ConfigError("Initial release only supports BINANCE_INTERVAL=15m")
+        if normalized not in SUPPORTED_INTERVALS:
+            allowed = ", ".join(sorted(SUPPORTED_INTERVALS))
+            raise ConfigError(f"Supported BINANCE_INTERVAL values: {allowed}")
         return normalized
 
     @field_validator("chase_interval_seconds")
@@ -267,6 +273,7 @@ class Settings(BaseSettings):
             "has_api_key": bool(self.binance_api_key),
             "has_api_secret": bool(self.binance_api_secret),
             "state_db_path": str(self.state_db_path),
+            "log_dir": str(self.log_dir),
             "credit_expires_at": self.credit_expires_at,
         }
 

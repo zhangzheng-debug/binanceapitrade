@@ -9,6 +9,7 @@ from typing import Any
 
 from bot.execution_maker_chaser import ChaserExchange, MakerChaser
 from bot.exchange_filters import SymbolFilters
+from bot.config import SUPPORTED_INTERVALS, SUPPORTED_SYMBOLS
 from bot.models import ChaseResult, Position, PositionSide, Side, StrategyEvent, StrategySignalSide
 from bot.position_sizing import PositionSize, account_equity_pct_size
 from bot.risk_manager import RiskManager
@@ -65,10 +66,10 @@ def _require_live_entry_canary_settings(settings: Any) -> None:
         raise LiveTradingRejected("public market dry-run modes cannot be used for live entry canary")
     if getattr(settings, "order_mode", "") != "account_equity_pct":
         raise LiveTradingRejected("live entry canary requires ORDER_MODE=account_equity_pct")
-    if getattr(settings, "binance_symbol", "") != "ETHUSDC":
-        raise LiveTradingRejected("live entry canary only supports ETHUSDC")
-    if getattr(settings, "binance_interval", "") != "15m":
-        raise LiveTradingRejected("live entry canary only supports BINANCE_INTERVAL=15m")
+    if getattr(settings, "binance_symbol", "") not in SUPPORTED_SYMBOLS:
+        raise LiveTradingRejected("live entry canary symbol is not supported")
+    if getattr(settings, "binance_interval", "") not in SUPPORTED_INTERVALS:
+        raise LiveTradingRejected("live entry canary interval is not supported")
 
 
 def account_equity_from_account_payload(payload: dict[str, Any], preferred_asset: str = "USDC") -> Decimal:
@@ -179,6 +180,40 @@ async def run_live_stop_once(
         side=side,
         quantity=quantity,
         max_seconds=settings.stop_chase_seconds,
+        interval_seconds=settings.chase_interval_seconds,
+    )
+    return LiveStopResult(
+        signal_id=signal_id,
+        side=side.value,
+        requested_qty=str(quantity),
+        chase_success=chase.success,
+        chase_reason=chase.reason,
+        order_id=chase.order_id,
+        market_order_id=chase.market_order_id,
+        filled_qty=str(chase.filled_qty),
+    )
+
+
+async def run_live_reduce_only_close_once(
+    *,
+    settings: Any,
+    exchange: ChaserExchange,
+    filters: SymbolFilters,
+    position: Position,
+    signal_id: str,
+    logger: logging.Logger | None = None,
+) -> LiveStopResult:
+    _require_live_entry_canary_settings(settings)
+    side = _stop_side_from_position(position)
+    quantity = RiskManager.clamp_reduce_only_quantity(position.quantity, position)
+    if quantity <= 0:
+        raise LiveTradingRejected("live close quantity is zero")
+    chaser = MakerChaser(exchange, filters, logger or logging.getLogger("bot.live_strategy_runner"))
+    chase: ChaseResult = await chaser.chase_reduce_only(
+        signal_id=signal_id,
+        side=side,
+        quantity=quantity,
+        max_seconds=settings.entry_chase_seconds,
         interval_seconds=settings.chase_interval_seconds,
     )
     return LiveStopResult(

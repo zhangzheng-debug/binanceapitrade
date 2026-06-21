@@ -249,15 +249,29 @@ def test_active_chase_blocks_other_trigger() -> None:
     assert strategy.state.pending_long_trigger.triggered is False
 
 
-def test_position_blocks_new_entry_trigger() -> None:
+def test_same_side_position_blocks_new_entry_trigger() -> None:
     strategy = PivotReversalStrategy()
     seed_pivot_high(strategy)
     events = TriggerMonitor(strategy).on_live_price_update(
         LivePriceUpdate("ETHUSDC", high_so_far=Decimal("11")),
-        has_open_position=True,
+        open_position_side=StrategySignalSide.LONG,
     )
-    assert events[0].event_type == "ignored_due_to_position"
+    assert events[0].event_type == "same_side_trigger_ignored_position_open"
     assert strategy.state.pending_long_trigger.triggered is False
+
+
+def test_opposite_position_allows_reversal_trigger() -> None:
+    strategy = PivotReversalStrategy()
+    seed_pivot_high(strategy)
+    events = TriggerMonitor(strategy).on_live_price_update(
+        LivePriceUpdate("ETHUSDC", high_so_far=Decimal("11")),
+        open_position_side=StrategySignalSide.SHORT,
+    )
+    assert [event.event_type for event in events[:2]] == [
+        "pine_stop_trigger_detected",
+        "breakout_triggered_original_pine",
+    ]
+    assert strategy.state.pending_long_trigger.triggered is True
 
 
 def test_missed_long_trigger_on_closed_candle_logged() -> None:

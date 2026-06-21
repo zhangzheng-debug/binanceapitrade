@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import subprocess
 import time
 from datetime import UTC, datetime
@@ -17,10 +18,9 @@ from bot.live_position_state import load_managed_position_marker
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "reports"
 DOCS = ROOT / "docs"
-JSON_REPORT = REPORTS / "live_monitor_status.json"
-MD_REPORT = DOCS / "live_monitor_status.md"
-EVENTS_LOG = ROOT / "logs" / "events.jsonl"
-SERVICE_NAME = "ethusdc-pivot-bot-live-strategy.service"
+JSON_REPORT = Path(os.environ.get("LIVE_MONITOR_JSON_REPORT", REPORTS / "live_monitor_status.json"))
+MD_REPORT = Path(os.environ.get("LIVE_MONITOR_MD_REPORT", DOCS / "live_monitor_status.md"))
+SERVICE_NAME = os.environ.get("LIVE_STRATEGY_SERVICE_NAME", "ethusdc-pivot-bot-live-strategy.service")
 ABNORMAL_EVENTS = {
     "entry_chase_started",
     "entry_order_placed",
@@ -96,12 +96,12 @@ def previous_status() -> dict[str, Any]:
         return {}
 
 
-def read_recent_events(cutoff_epoch: float) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
+def read_recent_events(cutoff_epoch: float, events_log: Path) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
     abnormal: list[dict[str, Any]] = []
     latest_market: dict[str, Any] | None = None
-    if not EVENTS_LOG.exists():
+    if not events_log.exists():
         return abnormal, latest_market
-    lines = EVENTS_LOG.read_text(encoding="utf-8").splitlines()[-20000:]
+    lines = events_log.read_text(encoding="utf-8").splitlines()[-20000:]
     for line in lines:
         if not line.strip():
             continue
@@ -163,10 +163,11 @@ def build_payload() -> dict[str, Any]:
     previous = previous_status()
     cutoff = float(previous.get("checked_at_epoch") or (now - 20 * 60))
     settings = load_settings()
+    events_log = Path(os.environ.get("LIVE_MONITOR_EVENTS_LOG", ROOT / settings.log_dir / "events.jsonl"))
     service = systemd_status()
     exchange = asyncio.run(read_exchange_state(settings))
     marker = compare_marker(settings, exchange)
-    abnormal_events, latest_market = read_recent_events(cutoff)
+    abnormal_events, latest_market = read_recent_events(cutoff, events_log)
 
     alerts: list[str] = []
     if service.get("active") != "active" or service.get("ActiveState") != "active":
@@ -181,13 +182,15 @@ def build_payload() -> dict[str, Any]:
     if previous_restarts is not None and service.get("NRestarts") != str(previous_restarts):
         alerts.append("service restart count changed")
     if exchange["open_orders"] != 0:
-        alerts.append("ETHUSDC open orders are nonzero")
-    if exchange["position_side"] == "NONE" or Decimal(exchange["position_quantity"]) <= 0:
-        alerts.append("ETHUSDC position is flat")
-    if not marker.get("present"):
-        alerts.append("managed position marker is missing")
-    elif not marker.get("matches_exchange"):
-        alerts.append("managed position marker does not match exchange position")
+        alerts.append(f"{settings.binance_symbol} open orders are nonzero")
+    position_quantity = Decimal(exchange["position_quantity"])
+    if position_quantity > 0:
+        if not marker.get("present"):
+            alerts.append("managed position marker is missing")
+        elif not marker.get("matches_exchange"):
+            alerts.append("managed position marker does not match exchange position")
+    elif marker.get("present"):
+        alerts.append("managed position marker exists while exchange position is flat")
     if latest_market is None:
         alerts.append("market heartbeat is missing")
     else:
@@ -202,6 +205,9 @@ def build_payload() -> dict[str, Any]:
         "checked_at_epoch": now,
         "status": "ALERT" if alerts else "OK",
         "alerts": alerts,
+        "symbol": settings.binance_symbol,
+        "interval": settings.binance_interval,
+        "events_log": str(events_log),
         "service": service,
         "exchange": exchange,
         "marker": marker,

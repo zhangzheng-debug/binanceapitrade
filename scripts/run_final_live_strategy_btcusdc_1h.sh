@@ -6,7 +6,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 if [[ "${I_APPROVE_FINAL_LIVE_STRATEGY_START:-}" != "YES" ]]; then
-  echo "Refusing to run final live strategy. Missing I_APPROVE_FINAL_LIVE_STRATEGY_START=YES."
+  echo "Refusing to run BTCUSDC final live strategy. Missing I_APPROVE_FINAL_LIVE_STRATEGY_START=YES."
   exit 1
 fi
 
@@ -31,8 +31,8 @@ export PUBLIC_MARKET_DRY_RUN=false
 export PUBLIC_MARKET_WS_ONLY=false
 export ALLOW_CACHED_EXCHANGE_FILTERS_IN_DRY_RUN=false
 export BINANCE_ENV=mainnet
-export BINANCE_SYMBOL=ETHUSDC
-export BINANCE_INTERVAL=15m
+export BINANCE_SYMBOL=BTCUSDC
+export BINANCE_INTERVAL=1h
 export STRATEGY_VARIANT=original_pivot_reversal
 export ORDER_MODE=account_equity_pct
 export POSITION_SIZE_PCT=100
@@ -40,13 +40,13 @@ export STOP_LOSS_ENABLED=false
 export TAKE_PROFIT_ENABLED=false
 export LIVE_STRATEGY_MAX_ENTRY_FILLS="${LIVE_STRATEGY_MAX_ENTRY_FILLS:-0}"
 export LIVE_STRATEGY_RESUME_EXISTING_POSITION="${LIVE_STRATEGY_RESUME_EXISTING_POSITION:-true}"
-export LIVE_MANAGED_POSITION_MARKER_PATH="${LIVE_MANAGED_POSITION_MARKER_PATH:-./data/live_managed_position_ETHUSDC_15m.json}"
-export STATE_DB_PATH="${STATE_DB_PATH:-./data/state_ETHUSDC_15m.sqlite3}"
-export LOG_DIR="${LOG_DIR:-./logs/ETHUSDC_15m}"
+export LIVE_MANAGED_POSITION_MARKER_PATH="${LIVE_MANAGED_POSITION_MARKER_PATH:-./data/live_managed_position_BTCUSDC_1h.json}"
+export STATE_DB_PATH="${STATE_DB_PATH:-./data/state_BTCUSDC_1h.sqlite3}"
+export LOG_DIR="${LOG_DIR:-./logs/BTCUSDC_1h}"
 export I_APPROVE_FINAL_LIVE_STRATEGY_START=YES
 
 python scripts/scan_secrets.py
 python scripts/live_strategy_capability_audit.py
-python scripts/check_config.py >/tmp/ethusdc-pivot-bot-check-config.json
+python scripts/check_config.py >/tmp/btcusdc-pivot-bot-check-config.json
 
 exec .venv/bin/python -m bot.main

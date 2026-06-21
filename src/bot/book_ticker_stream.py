@@ -9,7 +9,7 @@ from decimal import Decimal
 
 import websockets
 
-from bot.config import Settings
+from bot.config import SUPPORTED_SYMBOLS, Settings
 from bot.logging_config import log_event
 from bot.market_log_control import MarketLogControl
 from bot.models import BookTickerSnapshot, utc_now
@@ -19,9 +19,11 @@ LOCKED_BOOK_TICKER_ROUTED_PATH = "/public"
 
 
 def book_ticker_stream_name(symbol: str) -> str:
-    if symbol.upper() != "ETHUSDC":
-        raise ValueError("Initial release only supports ETHUSDC bookTicker stream")
-    return LOCKED_BOOK_TICKER_STREAM_NAME
+    normalized_symbol = symbol.upper()
+    if normalized_symbol not in SUPPORTED_SYMBOLS:
+        allowed = ", ".join(sorted(SUPPORTED_SYMBOLS))
+        raise ValueError(f"Supported bookTicker stream symbols: {allowed}")
+    return f"{normalized_symbol.lower()}@bookTicker"
 
 
 def book_ticker_ws_url(settings: Settings) -> str:
@@ -77,6 +79,7 @@ class BookTickerStream:
 
     async def run(self, *, max_seconds: float | None = None) -> None:
         url = book_ticker_ws_url(self.settings)
+        stream_name = book_ticker_stream_name(self.settings.binance_symbol)
         deadline = time.monotonic() + max_seconds if max_seconds is not None else None
         while deadline is None or time.monotonic() < deadline:
             if self.logger is not None:
@@ -84,14 +87,14 @@ class BookTickerStream:
                     self.logger,
                     "book_ticker_ws_connecting",
                     url=url,
-                    stream=LOCKED_BOOK_TICKER_STREAM_NAME,
+                    stream=stream_name,
                     routed_path=LOCKED_BOOK_TICKER_ROUTED_PATH,
                 )
             try:
                 async with websockets.connect(url, ping_interval=180, ping_timeout=600) as ws:
                     self.connected_count += 1
                     if self.logger is not None:
-                        log_event(self.logger, "book_ticker_ws_connected", stream=LOCKED_BOOK_TICKER_STREAM_NAME)
+                        log_event(self.logger, "book_ticker_ws_connected", stream=stream_name)
                     while deadline is None or time.monotonic() < deadline:
                         timeout = max(0.0, deadline - time.monotonic()) if deadline is not None else None
                         try:
@@ -107,7 +110,7 @@ class BookTickerStream:
                             log_event(
                                 self.logger,
                                 "book_ticker_update_received",
-                                stream=LOCKED_BOOK_TICKER_STREAM_NAME,
+                                stream=stream_name,
                                 update_count=self._update_count,
                             )
                         try:
@@ -127,14 +130,14 @@ class BookTickerStream:
                 self.reconnect_count += 1
                 if self.logger is not None:
                     log_event(self.logger, "book_ticker_ws_disconnected", reason=str(exc))
-                    log_event(self.logger, "book_ticker_ws_reconnecting", stream=LOCKED_BOOK_TICKER_STREAM_NAME)
+                    log_event(self.logger, "book_ticker_ws_reconnecting", stream=stream_name)
                 continue
             except OSError as exc:
                 self.error_count += 1
                 self.reconnect_count += 1
                 if self.logger is not None:
                     log_event(self.logger, "book_ticker_ws_error", error=exc.__class__.__name__, message=str(exc))
-                    log_event(self.logger, "book_ticker_ws_reconnecting", stream=LOCKED_BOOK_TICKER_STREAM_NAME)
+                    log_event(self.logger, "book_ticker_ws_reconnecting", stream=stream_name)
                 continue
         if self.logger is not None:
             log_event(self.logger, "book_ticker_ws_disconnected", reason="bounded_run_finished")

@@ -26,9 +26,9 @@ class RiskManager:
         if position.is_flat:
             return
         if position.side == PositionSide.LONG and signal_side == StrategySignalSide.SHORT:
-            raise RiskError("short entry is blocked while long position exists")
+            return
         if position.side == PositionSide.SHORT and signal_side == StrategySignalSide.LONG:
-            raise RiskError("long entry is blocked while short position exists")
+            return
         raise RiskError("adding to an existing position is blocked")
 
     def stop_triggered(self, position: Position, last_price: Decimal) -> bool:
@@ -45,4 +45,3 @@ class RiskManager:
         if requested <= 0 or position.quantity <= 0:
             return Decimal("0")
         return min(requested, position.quantity)
-

@@ -25,18 +25,18 @@ export LIVE_TRADING=true
 export PUBLIC_MARKET_DRY_RUN=false
 export PUBLIC_MARKET_WS_ONLY=false
 export BINANCE_ENV=mainnet
-export BINANCE_SYMBOL=ETHUSDC
-export BINANCE_INTERVAL=15m
+export BINANCE_SYMBOL=BTCUSDC
+export BINANCE_INTERVAL=1h
 export STRATEGY_VARIANT=original_pivot_reversal
 export ORDER_MODE=account_equity_pct
 export POSITION_SIZE_PCT=100
 export LIVE_STRATEGY_RESUME_EXISTING_POSITION="${LIVE_STRATEGY_RESUME_EXISTING_POSITION:-true}"
-export LIVE_MANAGED_POSITION_MARKER_PATH="${LIVE_MANAGED_POSITION_MARKER_PATH:-./data/live_managed_position_ETHUSDC_15m.json}"
-export STATE_DB_PATH="${STATE_DB_PATH:-./data/state_ETHUSDC_15m.sqlite3}"
-export LOG_DIR="${LOG_DIR:-./logs/ETHUSDC_15m}"
-export LIVE_STRATEGY_SERVICE_NAME="${LIVE_STRATEGY_SERVICE_NAME:-ethusdc-pivot-bot-live-strategy.service}"
-export LIVE_MONITOR_EVENTS_LOG="${LIVE_MONITOR_EVENTS_LOG:-./logs/ETHUSDC_15m/events.jsonl}"
-export LIVE_MONITOR_JSON_REPORT="${LIVE_MONITOR_JSON_REPORT:-./reports/live_monitor_status_ETHUSDC_15m.json}"
-export LIVE_MONITOR_MD_REPORT="${LIVE_MONITOR_MD_REPORT:-./docs/live_monitor_status_ETHUSDC_15m.md}"
+export LIVE_MANAGED_POSITION_MARKER_PATH="${LIVE_MANAGED_POSITION_MARKER_PATH:-./data/live_managed_position_BTCUSDC_1h.json}"
+export STATE_DB_PATH="${STATE_DB_PATH:-./data/state_BTCUSDC_1h.sqlite3}"
+export LOG_DIR="${LOG_DIR:-./logs/BTCUSDC_1h}"
+export LIVE_STRATEGY_SERVICE_NAME="${LIVE_STRATEGY_SERVICE_NAME:-btcusdc-pivot-bot-live-strategy.service}"
+export LIVE_MONITOR_EVENTS_LOG="${LIVE_MONITOR_EVENTS_LOG:-./logs/BTCUSDC_1h/events.jsonl}"
+export LIVE_MONITOR_JSON_REPORT="${LIVE_MONITOR_JSON_REPORT:-./reports/live_monitor_status_BTCUSDC_1h.json}"
+export LIVE_MONITOR_MD_REPORT="${LIVE_MONITOR_MD_REPORT:-./docs/live_monitor_status_BTCUSDC_1h.md}"
 
 exec .venv/bin/python scripts/live_monitor_status.py

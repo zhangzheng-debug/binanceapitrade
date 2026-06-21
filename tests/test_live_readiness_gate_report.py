@@ -7,7 +7,7 @@ def test_readiness_summary_waits_for_hedge_mode_approval() -> None:
             "final_verdict": "SIGNED_READONLY_PREFLIGHT_GO",
             "checks": {"exchange_info": {"filters_source": "EXCHANGE_INFO_REST"}},
             "order_mode": "account_equity_pct",
-            "position_size_pct": "200",
+            "position_size_pct": "100",
         },
         {
             "final_verdict": "LIVE_ORDER_CONTROL_CANARY_NO_GO",

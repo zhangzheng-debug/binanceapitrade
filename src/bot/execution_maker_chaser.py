@@ -107,6 +107,27 @@ class MakerChaser:
             market_fallback=True,
         )
 
+    async def chase_reduce_only(
+        self,
+        *,
+        signal_id: str,
+        side: Side,
+        quantity: Decimal,
+        max_seconds: int = 60,
+        interval_seconds: Decimal = Decimal("1"),
+    ) -> ChaseResult:
+        return await self._chase(
+            chase_type=ChaseType.CLOSE,
+            signal_id=signal_id,
+            side=side,
+            quantity=quantity,
+            max_seconds=max_seconds,
+            interval_seconds=interval_seconds,
+            partial_accept_ratio=Decimal("1"),
+            reduce_only=True,
+            market_fallback=False,
+        )
+
     async def _chase(
         self,
         *,

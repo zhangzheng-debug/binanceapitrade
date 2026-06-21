@@ -72,15 +72,15 @@ def evaluate(summary: dict[str, Any], config: dict[str, Any], capability: dict[s
             "detail": summary.get("order_mode", ""),
         },
         "position_size_pct": {
-            "ok": str(summary.get("position_size_pct", "")) == "200",
+            "ok": str(summary.get("position_size_pct", "")) == "100",
             "detail": summary.get("position_size_pct", ""),
         },
         "config_symbol": {
-            "ok": config.get("binance_symbol") == "ETHUSDC",
+            "ok": config.get("binance_symbol") in {"ETHUSDC", "BTCUSDC", "XRPUSDC"},
             "detail": config.get("binance_symbol", ""),
         },
         "config_interval": {
-            "ok": config.get("binance_interval") == "15m",
+            "ok": config.get("binance_interval") in {"15m", "1h"},
             "detail": config.get("binance_interval", ""),
         },
         "config_mainnet": {

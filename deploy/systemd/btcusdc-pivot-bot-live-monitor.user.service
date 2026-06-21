@@ -1,0 +1,7 @@
+[Unit]
+Description=BTCUSDC Pivot Bot read-only live monitor status writer
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/ethusdc-pivot-bot
+ExecStart=%h/ethusdc-pivot-bot/scripts/run_live_monitor_status_btcusdc_1h.sh

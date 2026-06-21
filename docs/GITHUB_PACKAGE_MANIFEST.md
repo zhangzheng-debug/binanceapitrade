@@ -1,6 +1,17 @@
 # GitHub Package Manifest
 
-This repository is a sanitized handoff package for the ETHUSDC Pivot Bot.
+This repository is a sanitized handoff package for the current multi-symbol
+Pivot Bot.
+
+Current strategy profiles:
+
+- `ETHUSDC` `15m`, `POSITION_SIZE_PCT=100`
+- `BTCUSDC` `1h`, `POSITION_SIZE_PCT=100`
+- `XRPUSDC` `1h`, `POSITION_SIZE_PCT=100`
+
+All strategy services were stopped and disabled before this package was
+prepared. Signed read-only preflight showed open orders `0` and position amount
+`0` for all three symbols.
 
 ## Included
 
@@ -11,7 +22,8 @@ This repository is a sanitized handoff package for the ETHUSDC Pivot Bot.
 - `tools/f2_migration_checker/`: Binance Futures public REST/WebSocket migration checker.
 - `config/`: non-secret cached dry-run filter fixtures.
 - `docs/`: architecture, runbooks, current sanitized server state, and Codex handoff instructions.
-- `reports/`: generated validation reports that do not contain secrets.
+- `reports/`: generated validation reports that do not contain secrets, when
+  included by the packaging step.
 - `.env.example`: safe template with empty credentials.
 
 ## Excluded
@@ -40,4 +52,18 @@ python scripts/scan_secrets.py
 rg -n "BINANCE_API_KEY=.+|BINANCE_API_SECRET=.+|PRIVATE KEY|gho_" . -S
 ```
 
-Expected result: `scan_secrets=passed`.
+Expected result: `secret_scan=passed`.
+
+## Current Source Of Truth
+
+Use these files first:
+
+- `README.md`
+- `docs/CODEX_AUTOMATION_HANDOFF.md`
+- `docs/REPRODUCIBLE_DEPLOYMENT_GUIDE.md`
+- `docs/SERVER_CURRENT_STATE_SANITIZED.md`
+- `docs/risk_rules.md`
+
+Historical phase reports may mention earlier ETH-only, 150%, 200%, or live
+canary states. Treat them as historical evidence, not current operating
+instructions.

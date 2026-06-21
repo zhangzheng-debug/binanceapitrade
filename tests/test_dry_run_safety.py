@@ -56,7 +56,7 @@ def test_env_example_empty_optional_decimals_are_allowed(monkeypatch) -> None:
     assert settings.take_profit_pct is None
 
 
-def test_account_equity_pct_position_size_accepts_200(monkeypatch) -> None:
+def test_account_equity_pct_position_size_defaults_to_100(monkeypatch) -> None:
     monkeypatch.setenv("DRY_RUN", "false")
     monkeypatch.setenv("LIVE_TRADING", "false")
     monkeypatch.setenv("PUBLIC_MARKET_DRY_RUN", "false")
@@ -64,10 +64,9 @@ def test_account_equity_pct_position_size_accepts_200(monkeypatch) -> None:
     monkeypatch.setenv("EXIT_AFTER_BOUNDED_RUNTIME", "false")
     monkeypatch.setenv("PHASE_FAST_SMOKE_SECONDS", "0")
     monkeypatch.setenv("ORDER_MODE", "account_equity_pct")
-    monkeypatch.setenv("POSITION_SIZE_PCT", "200")
     settings = load_settings()
     assert settings.order_mode == "account_equity_pct"
-    assert settings.position_size_pct == Decimal("200")
+    assert settings.position_size_pct == Decimal("100")
 
 
 def test_live_strategy_entry_fill_limit_defaults_to_one() -> None:
